@@ -5,6 +5,7 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import TablePagination from "@mui/material/TablePagination";
 import Paper from "@mui/material/Paper";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -13,46 +14,12 @@ import { getAllUsers} from "../../utils/Constants";
 import { useDispatch } from 'react-redux';
 import Button from '@mui/material/Button';
 
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-
-
-
-
-
-
-// {
-//   id: 2342355,
-//   product: "ASUS ROG Strix",
-//   img: "https://m.media-amazon.com/images/I/81hH5vK-MCL._AC_UY327_FMwebp_QL65_.jpg",
-//   customer: "Harold Carol",
-//   date: "1 March",
-//   amount: 2000,
-//   method: "Online",
-//   status: "Pending",
-// },
-
 
 const List = () => {
-
+  
   const [users, setUsers] = useState([]);
-
-
-  // const searchBy = (e) => {
-  //   let key = e.target.value;
-  //   if (!key) {
-  //     getUsersList();
-  //   } else {
-  //     axios
-  //       .get(`${searchUser}/${key}`)
-  //       .then((response) => {
-  //         console.log(response.data.users);
-  //         setUsers(response.data.users);
-  //       })
-  //       .catch((err) => {
-  //         console.log(err);
-  //       });
-  //   }
-  // };
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const navigate = useNavigate();
 
@@ -112,63 +79,80 @@ const List = () => {
           console.log(error);
         });
     };
-  
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const emptyRows =
+    rowsPerPage - Math.min(rowsPerPage, users.length - page * rowsPerPage);
 
   return (
     <>
-    {/* <div className="search">
-          <input type="text" name="query" placeholder="Search..." onChange={searchBy}/>
-          <SearchOutlinedIcon  />
-    </div> */}
-    <TableContainer component={Paper} className="table">
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            
-            <TableCell className="tableCell">No</TableCell>
-            <TableCell className="tableCell">Name</TableCell>
-            <TableCell className="tableCell">Email </TableCell>
-            {/* <TableCell className="tableCell">Phone</TableCell> */}
-            <TableCell className="tableCell">action</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {users.map((obj, index) => (
-            <TableRow key={index +1}>
-              <TableCell className="tableCell">{index +1}</TableCell>
-              <TableCell className="tableCell">{obj.username}</TableCell>
-              <TableCell className="tableCell">{obj.email}</TableCell>
-              {/* <TableCell className="tableCell">{obj.phone}</TableCell> */}
-              {/* <TableCell className="tableCell">
-              {/* <span className={`status ${obj.Pending}`}>{obj.status}</span> */}
-              {/* <button style={{backgroundColor:"red"}}>Block</button> */}
-              {/* </TableCell> */}
-              <TableCell  align="left">
-                  {obj.Block === true ? (
-                      <Button
-                
-                        onClick={() =>unblockStaff (obj._id)}
-                        variant="contained"
-                        color="success"
-                      >
-                        UNBLOCK
-                      </Button>
-                    ) : (
-                      <Button
-            
-                        onClick={() => blockStaff(obj._id)}
-                        variant="outlined"
-                        color="error"
-                      >
-                        BLOCK
-                      </Button>
-                    )}
-                  </TableCell>
+      <TableContainer component={Paper} className="table">
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell className="tableCell">No</TableCell>
+              <TableCell className="tableCell">ProfilePic</TableCell>
+              <TableCell className="tableCell">Name</TableCell>
+              <TableCell className="tableCell">Email </TableCell>
+              <TableCell className="tableCell">action</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {(rowsPerPage > 0
+              ? users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : users
+            ).map((obj, index) => (
+              <TableRow key={index + 1}>
+                <TableCell className="tableCell">{index + 1}</TableCell>
+                <TableCell className="tableCell"><img src={obj.profilePicture} alt="" style={{ width: '60px', height: '60px' ,borderRadius:"50%"}} /></TableCell>
+                <TableCell className="tableCell">{obj.username}</TableCell>
+                <TableCell className="tableCell">{obj.email}</TableCell>
+                <TableCell align="left">
+                  {obj.Block === true ? (
+                    <Button
+                      onClick={() => unblockStaff(obj._id)}
+                      variant="contained"
+                      color="success"
+                    >
+                      UNBLOCK
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => blockStaff(obj._id)}
+                      variant="outlined"
+                      color="error"
+                    >
+                      BLOCK
+                    </Button>
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
+            {emptyRows > 0 && (
+              <TableRow style={{ height: 53 * emptyRows }}>
+                <TableCell colSpan={4} />
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={users.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </TableContainer>
     </>
   );
 };

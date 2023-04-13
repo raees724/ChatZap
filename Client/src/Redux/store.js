@@ -42,6 +42,12 @@ export const authSlice = createSlice({
         setMessages: (state, action) => {
             state.messages = action.payload.messages;
         },
+        setOtp: (state, action) => {
+            state.otp = action.payload.otp;
+        },
+        setTempemail: (state, action) => {
+            state.tempemail = action.payload.tempemail;
+        },
         setNotFollowingUsers: (state, action) => {
             state.notFollowingUsers = action.payload.notFollowingUsers;
         },
@@ -50,10 +56,17 @@ export const authSlice = createSlice({
         },
         setFollowings:(state,action) =>{
             state.followings = action.payload.followings;
+        },
+        setSuggestedUsers: (state, action) => {
+            state.suggestUsers = action.payload.suggestUsers;
+        },
+        setdeletePost: (state, action) => {
+            const updatedPosts = state.posts.filter(post => post._id !== action.payload.post._id);
+            state.posts = updatedPosts;
         }
     },
 });
 
-export const { setMode, setLogin, setLogout, setPosts, setPost, setUser, setMessages, setToken, setNotFollowingUsers, setFollowers, setFollowings } =
+export const { setdeletePost,setMode,setSuggestedUsers, setLogin,setOtp,setTempemail, setEmail, setLogout, setPosts, setPost, setUser, setMessages, setToken, setNotFollowingUsers, setFollowers, setFollowings } =
     authSlice.actions;
 export default authSlice.reducer;

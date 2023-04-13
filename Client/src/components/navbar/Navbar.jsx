@@ -24,11 +24,15 @@ const Navbar = () => {
       </div>
       <div className="right">
         <div className="user">
+        
           <img
-            // src={currentUser.profilePic}
+            src={user.profilePicture}
             alt=""
           />
+          <Link  to={`/profile/${user._id}`}
+                style={{ textDecoration: "none", color: "inherit" }}>
           <span>{user?.username}</span>
+          </Link>
         </div>
       </div>
     </div>

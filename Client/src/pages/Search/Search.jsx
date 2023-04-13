@@ -3,6 +3,7 @@ import "../../pages/Search/search.scss"
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import axios from '../../utils/axios';
 import Avatar from '@mui/material/Avatar';
+import { Link } from "react-router-dom";
 
 const Search = () => {
 
@@ -37,10 +38,21 @@ const Search = () => {
               {
                 users.map((user)=>(
                   <div className="userRow" key={user._id}>
-                    <Avatar
+                    {/* <Avatar
                             sx={{ width: 30, height: 30 }}
                     />
-                    <h4>{user.username}</h4>
+                    <h4>{user.username}</h4> */}
+                              <div className="user">
+          <img
+            src={user.profilePicture}
+            alt=""
+            />
+            <Link  to={`/profile/${user._id}`}
+                style={{ textDecoration: "none", color: "inherit" }}>
+          <span>{user?.username}</span>
+          </Link>
+          {/* <span>{user?.username}</span> */}
+        </div>
                   </div>
                 ))
               }

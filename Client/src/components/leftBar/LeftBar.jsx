@@ -13,11 +13,13 @@ import LogoutIcon from '@mui/icons-material/Logout';
 // import { useContext } from "react";
 import { useState } from 'react';
 import { useContext } from "react";
+
 import { Link } from "react-router-dom";
 import { DarkModeContext } from "../../context/darkModeContext";
 import { useSelector,useDispatch, } from "react-redux";
 // import { color } from "@mui/system";
 import AddPost from "../../components/Addpost/AddPost";
+import { setLogout } from "../../Redux/store";
 
 const LeftBar = () => {
 
@@ -74,7 +76,7 @@ const LeftBar = () => {
             <h4 >
             {user ? (
               <h4 >
-                <LogoutIcon onClick={handleLogout}/>
+                <LogoutIcon onClick={() => dispatch(setLogout())}/>
               
             </h4>
             ) : (

@@ -1,6 +1,24 @@
 @import "../../style.scss";
 
 .comments {
+  
+  max-height: calc(4 * 50px); // Replace 50px with the height of each entry
+  overflow-y: auto;
+        
+          &::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+          }
+          
+          
+          &::-webkit-scrollbar-track {
+            background-color: #F5F5F5;
+          }
+        
+          &::-webkit-scrollbar-thumb {
+            background-color: #000000;
+            border-radius: 10px;
+          }
   @include themify($themes) {
     img {
       width: 40px;
@@ -12,7 +30,7 @@
     .write{
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      // justify-content: space-between;
       gap: 20px;
       margin: 20px 0px;
 
@@ -39,6 +57,8 @@
       display: flex;
       justify-content: space-between;
       gap: 20px;
+      
+      
 
       .info {
         flex:5;

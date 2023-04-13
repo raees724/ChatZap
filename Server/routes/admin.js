@@ -27,9 +27,14 @@ router.post("/", async (req, res) => {
 
 router.post('/signUp', adminController.AdminSignup)
 router.get('/getAllUsers', adminController.getAllUser)
+router.get('/getAllPosts', adminController.getAllPost)
 router.post('/login', adminController.AdminLogin)
 
 router.patch('/block/:id',adminController.blockStaff)
 router.patch('/unblock/:id',adminController.unblockStaff)
+
+
+router.patch('/blockpost/:id',adminController.blockPost)
+router.patch('/unblockpost/:id',adminController.unblockPost)
 
 module.exports = router;

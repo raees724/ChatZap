@@ -1,6 +1,6 @@
 import Login from "./pages/Login/Login";
 import Signup from "./pages/Signup/Signup";
-import Notification from './pages/Notification/Notification'
+
 import Search from "./pages/Search/Search"
 import Chat from "./pages/Chat/Chat"
 import {
@@ -18,11 +18,17 @@ import "./style.scss";
 import { useContext } from "react";
 import { DarkModeContext } from "./context/darkModeContext";
 import Otp from "./pages/OtpLogin/Otp";
+
+
 // import AddPost from "./components/Addpost/AddPost";
 // import Share from "./components/share/Share";
 // import AddPost from "./components/Addpost/AddPost";
 // import { AuthContext } from "./context/authContext";
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import OtpPage from "./pages/Otp/OtpPage";
+import Messenger from "./pages/Messenger/Messenger";
+import Notification from "./pages/Notification/Notification";
 
 function App() {
   // const {currentUser} = useContext(AuthContext);
@@ -32,6 +38,7 @@ function App() {
   const Layout = () => {
     return (
       <div className={`theme-${darkMode ? "dark" : "light"}`}>
+         <ToastContainer />
         <Navbar />
         <div style={{ display: "flex" }}>
           <LeftBar />
@@ -71,7 +78,7 @@ function App() {
         },
         {
           path: "/notifications",
-          element: <Notification />,
+          element: <Notification/>,
         },
         {
           path: "/search",
@@ -79,10 +86,11 @@ function App() {
         },
         {
           path: "/chat",
-          element: <Chat />,
+          element: <Messenger />,
         },
       ],
     },
+    
     {
       path: "/login",
       element: <Login />,
@@ -94,6 +102,10 @@ function App() {
     {
       path: "/OtpLogin",
       element: <Otp />,
+    },
+    {
+      path: "/Otp",
+      element: <OtpPage/>,
     },
   ]);
 

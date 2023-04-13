@@ -4,6 +4,7 @@ import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
 import StoreIcon from "@mui/icons-material/Store";
+import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import InsertChartIcon from "@mui/icons-material/InsertChart";
 import SettingsApplicationsIcon from "@mui/icons-material/SettingsApplications";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
@@ -14,12 +15,16 @@ import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined
 import { Link } from "react-router-dom";
 import { DarkModeContext } from "../../context/darkModeContext";
 import { useContext } from "react";
-
+import { setLogout } from "../../Redux/store";
+import { useDispatch } from "react-redux";
 const Sidebar = () => {
+  const disPatch = useDispatch();
+
   const handleLogout = () => {
 		localStorage.removeItem("token");
 		window.location.reload();
 	};
+
   const { dispatch } = useContext(DarkModeContext);
   return (
     <div className="sidebar">
@@ -45,50 +50,33 @@ const Sidebar = () => {
               <span>User Management</span>
             </li>
           </Link>
-          <Link to="/products" style={{ textDecoration: "none" }}>
+          <Link to="/reports" style={{ textDecoration: "none" }}>
             <li>
               <StoreIcon className="icon" />
               <span>Report Management</span>
             </li>
           </Link>
-          {/* <li>
-            <CreditCardIcon className="icon" />
-            <span>Orders</span>
-          </li>
-          <li>
-            <LocalShippingIcon className="icon" />
-            <span>Delivery</span>
-          </li>
-          <p className="title">USEFUL</p>
-          <li>
-            <InsertChartIcon className="icon" />
-            <span>Stats</span>
-          </li>
-          <li>
-            <NotificationsNoneIcon className="icon" />
-            <span>Notifications</span>
-          </li>
-          <p className="title">SERVICE</p>
-          <li>
-            <SettingsSystemDaydreamOutlinedIcon className="icon" />
-            <span>System Health</span>
-          </li>
-          <li>
-            <PsychologyOutlinedIcon className="icon" />
-            <span>Logs</span>
-          </li>
-          <li>
-            <SettingsApplicationsIcon className="icon" />
-            <span>Settings</span>
-          </li> */}
+          
           <p className="title">ADMIN</p>
-          <li>
+          {/* <li>
             <AccountCircleOutlinedIcon className="icon" />
             <span>Profile</span>
+          </li> */}
+          <li>
+            {/* <AccountCircleOutlinedIcon className="icon" /> */}
+
+            <div className="item">
+            <DarkModeOutlinedIcon
+              className="icon"
+              onClick={() => dispatch({ type: "TOGGLE" })}
+              />
+              <span>Switch theme</span>
+          </div>
+
           </li>
           <li>
             <ExitToAppIcon className="icon"  />
-            <button onClick={handleLogout}> <span>Logout</span></button>
+            <button  onClick={() => disPatch(setLogout())}> <span>Logout</span></button>
            
           </li>
         </ul>

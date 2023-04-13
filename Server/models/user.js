@@ -32,7 +32,10 @@ const userSchema = new mongoose.Schema({
 	Block:{
 		type:Boolean, 
 		default:false
-	}
+	},
+	bio: {
+        type: String,
+    }
 });
 
 userSchema.methods.generateAuthToken = function () {

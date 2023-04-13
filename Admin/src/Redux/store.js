@@ -85,9 +85,6 @@ export const authSlice = createSlice({
         },
         setMessages: (state, action) => {
             state.messages = action.payload.messages;
-        },
-         setMove:(state,action)=>{
-            state.movie=action.payload.movie
         }
     },
 });

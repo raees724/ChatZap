@@ -108,6 +108,7 @@ import { useContext } from "react";
 import {useSelector} from 'react-redux';
 import { DarkModeContext } from "./context/darkModeContext";
 import List from "./pages/list/List";
+import Reports from "./pages/Reporters/Reports";
 
 
 
@@ -134,6 +135,7 @@ function App() {
           <Route path="/">
             <Route index element={token ? <Home />: <Navigate to="/login" />} />
             <Route path="/users" element={<List/>} />
+            <Route path="/reports" element={<Reports/>} />
 
 
           </Route> 

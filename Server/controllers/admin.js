@@ -3,6 +3,7 @@ const { Admin, validate } = require("../models/admin");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { User } = require('../models/user');
+const  Post  = require('../models/post');
 
 const adminController = {
 // Admin SignUp
@@ -139,6 +140,21 @@ getAllUser: async (req, res) => {
   }
 },
 
+getAllPost: async (req, res) => {
+  try {
+    const posts = await Post.find({ isReported: true }).select("");
+    console.log(posts , "////////////");
+    if (!posts)
+      return res
+        .status(500)
+        .json({ message: "didnt got postss from database" });
+
+    res.status(200).json({ message: "Success", posts });
+  } catch (error) {
+    res.status(500).json({ message: "something went wrong" });
+  }
+},
+
 
 blockStaff :async (req, res) => {
   console.log('hiiii');
@@ -169,6 +185,40 @@ unblockStaff :async (req, res) => {
     );
 
     res.json(user);
+  } catch (err) {
+    console.log(err);
+  }
+},
+
+blockPost :async (req, res) => {
+  console.log('hiiii');
+  try {
+    let id = req.params.id   
+    console.log(id,'iiiiiiiii report'); 
+
+    const postt = await Post.findByIdAndUpdate(
+      { _id: Object(id) },
+      { $set: { isDisabled: true } }
+    );
+
+    res.json(postt);
+  } catch (err) {
+    console.log(err);
+  }
+},
+
+unblockPost :async (req, res) => {
+  let id = req.params.id  
+  console.log(id,'uuuuuuuuuuuuu');
+  try {
+    console.log("unblock report");
+    // const {id} = req.body
+    const postt = await Post.findByIdAndUpdate(
+      { _id: Object(id) },
+      { $set: { isDisabled: false } }
+    );
+
+    res.json(postt);
   } catch (err) {
     console.log(err);
   }

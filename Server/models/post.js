@@ -44,7 +44,20 @@ const postSchema = new mongoose.Schema({
     isDelete: {
         type: Boolean,
         default: false
-    }
+    },
+    isReported: {
+        type: Boolean,
+        default: false
+    },
+    isDisabled: {
+        type: Boolean,
+        default: false
+    },
+    reports: {
+        type: Array,
+        default: [],
+        required: false
+    },
 });
 
 const Post = mongoose.model('Post', postSchema);

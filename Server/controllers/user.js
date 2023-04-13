@@ -3,8 +3,9 @@ const { User, validate } = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const userotp = require("../models/userOtp");
-
+const   cloudinary = require('../config/cloudinary.js');
 const nodemailer = require("nodemailer");
+const  Notification  = require('../models/Notification');
 
 //Email configuration
 const transporter = nodemailer.createTransport({
@@ -71,6 +72,34 @@ userLogin:  async (req, res) => {
 
 
 },
+otpLogin:  async (req, res) => {
+  console.log('ddddd')
+  try {
+    // var { error } = Loginvalidate(req.body);
+    // if (error)
+    //   return res.status(400).send({ message: error.details[0].message });
+    const email = req.params.email;
+    var user = await User.findOne({ email: email });
+    
+    console.log('uduudu ',user)
+
+    if (!user)
+    return res.status(401).send({ message: "Invalid Email or Password" });
+    
+    if (user.Block)
+      return res.status(401).send({ message: "You are Blocked !" });
+   
+    
+    var token = user.generateAuthToken();
+    res
+      .status(200)
+      .json({ token, user });
+  } catch (error) {
+    res.status(500).send({ message: "Internal Server Error" });
+  }
+
+
+},
 
 
 //User Send Otp
@@ -109,7 +138,7 @@ userOtpSend: async (req,res) =>{
                 res.status(400).json({error:"Email not Send"})
               }else{
                 console.log("Email sent",info.response);
-                res.status(200).json({message:"Email sent Successfully"})
+                res.status(200).json({message:"Email sent Successfully",otp:OTP})
               }
             })
 
@@ -117,7 +146,7 @@ userOtpSend: async (req,res) =>{
             const saveOtpData = new userotp({email,otp:OTP});
             await saveOtpData.save();
             const mailOptions = {
-              from: process.env.Email,
+              from: process.env.EMAIL,
               to: email,
               subject:"Sending Email for Otp Validation",
               text:`OTP:-${OTP}`
@@ -129,12 +158,12 @@ userOtpSend: async (req,res) =>{
                 res.status(400).json({error:"Email not Send"})
               }else{
                 console.log("Email sent",info.response);
-                res.status(200).json({message:"Email sent Successfully"})
+                res.status(200).json({message:"Email sent Successfullyy",otp:OTP})
               }
             })
           }
       }else{
-        res.status(400).json({error:"This user is not exist in outr db"})
+        res.status(400).json({error:"This user is not exist in our db"})
       }
   }catch(error){
     res.status(400).json({error:"Invalid Details",error})
@@ -155,6 +184,21 @@ userOtpSend: async (req,res) =>{
       res.status(500).json(error)
   }
  },
+
+ getAllUser: async (req, res) => {
+  try {
+    const user = await User.find().select("-password");
+    console.log(user , "////////////");
+    if (!user)
+      return res
+        .status(500)
+        .json({ message: "didnt got users from database" });
+
+    res.status(200).json({ message: "Success", user });
+  } catch (error) {
+    res.status(500).json({ message: "something went wrong" });
+  }
+},
  
 
  //Search user
@@ -185,6 +229,14 @@ if(req.body.currentUserId != req.params.id) {
     if(!user.followers.includes(req.body.currentUserId)){
       await user.updateOne({$push :{followers: req.body.currentUserId}})
       await currentUser.updateOne({$push:{followings: req.params.id}})
+      const notification = new Notification({
+        type: "follow",
+        user: req.params.id,
+        friend: req.body.currentUserId,
+        content: 'Started Following You'
+    })
+    await notification.save();
+      
       res.status(200).json("user has been followed");
     }else{
       res.status(403).json("you already follow the user")
@@ -226,22 +278,43 @@ unfollowUser : async (req,res) =>{
   },
 
   //Token Verify
-verifyToken: async (req, res) => {
+// verifyToken: async (req, res) => {
+//   try {
+//     console.log('130000000' , req.headers.authorization);
+//     // console.log('5444444444 => ',req)
+//     console.log('5444444444 => ',req.headers.authorization)
+//     const Token = req.headers.authorization;
+//     const decoded = jwt.verify(Token, process.env.JWTPRIVATEKEY);
+//     // console.log("#4567", decoded)
+//     const email = decoded.email;
+//     const user = await User.findOne({ email: email });
+//     return res.status(200).json({ message: "token valid", user });
+//   } catch (error) {
+//     console.log('1422222222 => ',error);
+//     res.json({ status: "error", error: "invalid token" });
+//   }
+// },
+
+verifyToken : async (req, res, next) => {
   try {
-    console.log('130000000' , req.headers.authorization);
-    // console.log('5444444444 => ',req)
-    // console.log('5444444444 => ',req.headers)
-    const Token = req.headers.authorization;
-    const decoded = jwt.verify(Token, process.env.JWTPRIVATEKEY);
-    const email = decoded.email;
-    const user = await User.findOne({ email: email });
-    if (user.image) user.image = `http://localhost:9000/${user.image}`;
-    else
-      user.image = `https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png`;
-    return res.status(200).json({ message: "token valid", user });
-  } catch (error) {
-    console.log('1422222222 => ',error);
-    res.json({ status: "error", error: "invalid token" });
+      
+      let token = req.header("Authorization");
+      console.log("token in Server", token)
+
+      if (!token) {
+          return res.status(403).send("Access Denied");
+      }
+
+      if (token.startsWith("Bearer ")) {
+          token = token.slice(7, token.length).trimLeft();
+      }
+      const verified = jwt.verify(token, process.env.JWTPRIVATEKEY);
+      req.user = verified;
+      console.log("User",req.user)
+      next();
+      console.log("user verified")
+  } catch (err) {
+      res.status(500).json({ error: err.message });
   }
 },
 
@@ -253,7 +326,7 @@ getNotFollowingUsers : async (req, res) => {
 
     // Get all users except the current user and those being followed by the current user
     const notFollowingUsers = await User.find({ _id: { $ne: currentUserId, $nin: currentUser.followings } });
-
+    notFollowingUsers.reverse();
     // console.log('notFollowingUsers',notFollowingUsers)
     res.status(200).json(notFollowingUsers);
   } catch (error) {
@@ -270,7 +343,7 @@ getFollowers : async (req,res) =>{
 
     // Get all users except the current user and those who follow  the current user
     const Followers = await User.find({ _id: { $ne: currentUserId, $in: currentUser.followers } });
-
+    Followers.reverse();
     // console.log('Followers',Followers)
     res.status(200).json(Followers);
   } catch (error) {
@@ -289,13 +362,112 @@ getFollowings : async (req,res) =>{
     // Get all users except the current user and those being followed by the current user
     const Followings = await User.find({ _id: { $ne: currentUserId, $in: currentUser.followings } });
 
-    // console.log('Followings',Followings)
+    console.log('Followings',Followings)
+    Followings.reverse();
+    console.log('Followings Reverse',Followings)
     res.status(200).json(Followings);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
   }
 },
+
+addProfilePic : async (req, res) => {
+  try {
+
+      console.log("user id baneeeeeeeee");
+      console.log(req.body);
+      const id = req.params.id
+      console.log("user id is :",id);
+      const { userId } = req.body;
+      const result = await cloudinary.uploader.upload(req.file.path, {
+          folder: "Users"
+      });
+      const updatedUser = await User.findByIdAndUpdate(
+          userId, 
+              { profilePicture: result.secure_url },
+              { new: true }
+      )
+      
+      res.status(200).json(updatedUser);
+  } catch (error) {
+      res.status(500).json(error)
+  }
+},
+
+editUserProfile: async (req, res) => {
+try{
+const {bio,userId,currentPassword,newPassword} = req.body;
+
+const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+    if (!isPasswordValid) {
+      return res.status(400).json({ message: "Invalid current password" });
+    }
+
+const salt = await bcrypt.genSalt(Number(process.env.SALT));
+const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+console.log("Edk etheen", req.body.bio, req.body.userId)
+
+const updatedUser = await User.findByIdAndUpdate(
+  userId,{
+    bio:bio,
+    password:hashedPassword
+  },
+  {new : true}
+)
+res.status(200).json(updatedUser)
+}catch(error){
+  console.log("eeedk edthi")
+res.status(500).json(error)
+}
+},
+
+
+//userBio
+editUserProfileBio: async (req, res) => {
+  try{
+  const {bio,userId} = req.body;
+  
+  
+  console.log("Edk etheen", req.body.bio, req.body.userId)
+  
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,{
+      bio:bio,
+    },
+    {new : true}
+  )
+  res.status(200).json(updatedUser)
+  }catch(error){
+    console.log("eeedk edthi because eede error baaai")
+  res.status(500).json(error)
+  }
+  },
+
+  //Notifications
+  getNotifications : async (req, res)=>{
+    try {
+        console.log("Notifaction body",req.params.id)
+        const  id  = req.params.id;
+        console.log("Notificationl banne id",id)
+        const notifiactions = await Notification.find({ user:Object(id) })
+            .populate('friend', 'username profilePicture')
+            .populate('postId', 'image')
+            .sort({ createdAt: -1 })
+            .exec();
+        res.status(200).json(notifiactions);
+    } catch (err) {
+        console.log("notififcation ////",err);
+        res.status(500).json(err);
+    }
+},
+
 
 
 }

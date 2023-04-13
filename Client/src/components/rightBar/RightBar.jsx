@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import axios from "../../utils/axios";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 
 
@@ -18,20 +19,29 @@ const RightBar = () => {
   const [unfollowClicked,setUnfollowClicked] = useState(false);
 
   const currentUser = useSelector(state => state.user);
-  const [notFollowingUsers, setNotFollowingUsers] = useState([]);
-  
-  const [Followers,setFollowers] = useState([]);
-  const [Followings,setFollowings] = useState([]);
+
+  const Followers = useSelector(state => state.followers);
+  const Followings = useSelector(state => state.followings);
+  const notFollowingUsers = useSelector(state => state.notFollowingUsers);
+
+  console.log(" Store Followers:",Followers)
+  console.log(" Store Followings:",Followings)
+  console.log(" Store notFollowingUsers:",notFollowingUsers)
+
+
+  // const [notFollowingUsers, setNotFollowingUsers] = useState([]);
+  // const [Followers,setFollowers] = useState([]);
+  // const [Followings,setFollowings] = useState([]);
 
   
 
   const getNotFollowingUsers = async () =>{
     try {
       const response = await axios(`api/users/getNotFollowingUsers/${currentUser._id}`);
-      console.log('17 res =>',response.data);
+      console.log('NotfollowingUser res =>',response.data);
 
       dispatch(setNotFollowingUsers({notFollowingUsers: response.data}));
-      setNotFollowingUsers(response.data);
+      // setNotFollowingUsers(response.data);
     } catch (error) {
       console.log('getAllUsers error notfollwing: ' + error);
     }
@@ -42,8 +52,8 @@ const RightBar = () => {
       const response = await axios(`api/users/getFollowers/${currentUser._id}`);
       console.log('Followers res =>',response.data);
 
-      dispatch(setFollowers({Followers: response.data}));
-      setFollowers(response.data);
+      dispatch(setFollowers({followers: response.data}));
+      // setFollowers(response.data);
     } catch (error) {
       console.log('getAllUsers error: Follwers' + error);
     }
@@ -52,10 +62,10 @@ const RightBar = () => {
   const getFollowings = async () =>{
     try {
       const response = await axios(`api/users/getFollowings/${currentUser._id}`);
-      console.log('Followings res =>',response.data);
+      console.log('Followings reverse saaayi vanna data res =>',response.data);
 
-      dispatch(setFollowings({Followings: response.data}));
-      setFollowings(response.data);
+      dispatch(setFollowings({followings: response.data}));
+      // setFollowings(response.data);
     } catch (error) {
       console.log('getAllUsers error: Follwings' + error);
     }
@@ -73,7 +83,7 @@ const RightBar = () => {
 
 
 
-  console.log('333366667, ', notFollowingUsers.notFollowingUsers);
+  console.log('333366667, ', notFollowingUsers?.notFollowingUsers);
   
   const handleFollow = async (userId) => {
     // Handle follow action here
@@ -82,12 +92,12 @@ const RightBar = () => {
     console.log(`User with ID ${userId} followed`);
     getNotFollowingUsers();
     // Followers();
-    // Followings();
+    getFollowings();
     // dispatch(setNotFollowingUsers({notFollowingUsers: response.data}));
     
     const updatedFollowings = [...Followings.Followings, response.data];
     dispatch(setFollowings({ Followings: updatedFollowings }));
-    setFollowings(updatedFollowings);
+    // setFollowings(updatedFollowings);
 
     setFollowClicked(true);
   }
@@ -102,11 +112,11 @@ const RightBar = () => {
     const response = await axios.put(`api/users/unfollow/${userId}`,{currentUserId : currentUser._id})
     console.log(`User with Id ${userId} unfollowed`)
     getNotFollowingUsers();
-    // Followings();
+    getFollowings();
 
     const updatedFollowings = Followings.Followings.filter(user => user._id !== userId);
     dispatch(setFollowings({ Followings: updatedFollowings }));
-    setFollowings(updatedFollowings);
+    // setFollowings(updatedFollowings);
 
     // dispatch(setFollowings({Followings: response.data}));
     setUnfollowClicked(true);
@@ -121,15 +131,20 @@ const RightBar = () => {
 
         <div className="item">
           <span>You might Know..</span>
-          { notFollowingUsers && notFollowingUsers.notFollowingUsers && notFollowingUsers.notFollowingUsers.map((user) => (
+          { notFollowingUsers?.map((user) => (
             
             <div className="user" key={user._id}>
               <div className="userInfo">
                 <img
-                  src="https://images.pexels.com/photos/4881619/pexels-photo-4881619.jpeg?auto=compress&cs=tinysrgb&w=1600"
+                  src={user.profilePicture}
                   alt=""
                 />
+                <Link
+                to={`/profile/${user._id}`}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
                 <span>{user.username}</span>
+              </Link>
               </div>
               <div className="buttons">
                 <button className="btnfollow" onClick={() => handleFollow(user._id)}>follow</button>
@@ -144,7 +159,7 @@ const RightBar = () => {
 <div className="item">
           <span>Followers..</span>
           
-          { Followers && Followers.Followers && Followers.Followers.map((user) => (
+          { Followers?.map((user) => (
 
 
               // !currentUser.followings.includes( user._id) &&
@@ -152,10 +167,15 @@ const RightBar = () => {
             <div className="user" key={user._id}>
               <div className="userInfo">
                 <img
-                  src="https://images.pexels.com/photos/4881619/pexels-photo-4881619.jpeg?auto=compress&cs=tinysrgb&w=1600"
+                  src={user.profilePicture}
                   alt=""
                 />
+                <Link
+                to={`/profile/${user._id}`}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
                 <span>{user.username}</span>
+              </Link>
               </div>
               <div className="buttons">
                 
@@ -171,16 +191,21 @@ const RightBar = () => {
         <div className="item">
           <span>Followings..</span>
           
-          { Followings && Followings.Followings && Followings.Followings.map((user) => (
+          { Followings?.map((user) => (
 
             
             <div className="user" key={user._id}>
               <div className="userInfo">
                 <img
-                  src="https://images.pexels.com/photos/4881619/pexels-photo-4881619.jpeg?auto=compress&cs=tinysrgb&w=1600"
+                  src={user.profilePicture}
                   alt=""
                 />
+                <Link
+                to={`/profile/${user._id}`}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
                 <span>{user.username}</span>
+              </Link>
               </div>
               <div className="buttons">
                 <button className="btnUnfollow" onClick={() => handleUnfollow(user._id)}>Unfollow</button>

@@ -39,7 +39,7 @@ import Post from '../post/Post';
 // import Stories from '../Stories/Stories';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { setPosts } from '../../state';
+import { setPosts } from '../../Redux/store';
 import axios from '../../utils/axios';
 import { getPosts } from '../../utils/Constants';
 import { useState } from 'react';
@@ -49,9 +49,10 @@ const Posts = () => {
 
 
   const dispatch = useDispatch();
-  // const posts = useSelector((state) => state.posts);
+  const posts = useSelector((state) => state.posts);
   const token = useSelector((state) => state.token);
-  const [posts,setPosts] = useState([]); 
+  
+  // const [posts,setPosts] = useState([]); 
 
 
   const getAllPosts = async () => {
@@ -65,7 +66,7 @@ const Posts = () => {
     const postData = response.data;
     console.log('postdata = ',postData);
     setPosts(postData);
-    // dispatch(setPosts({ posts: postData }));
+    dispatch(setPosts({ posts: postData }));
   }
 
   useEffect(() => {

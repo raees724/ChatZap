@@ -8,6 +8,7 @@
       width: auto;
       height: 300px;
       position: relative;
+      
 
       
 
@@ -116,6 +117,14 @@
             padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
+            
+          }
+          .btnfollow {
+            background-color: #5271ff;
+          }
+  
+          .btnUnfollow {
+            background-color: #f0544f;
           }
         }
 
@@ -126,6 +135,7 @@
           justify-content: flex-end;
           gap: 10px;
         }
+        
       }
     }
   }
