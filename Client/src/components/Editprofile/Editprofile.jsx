@@ -14,10 +14,9 @@ import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import axios from "../../utils/axios";
 import { Field, Form, Formik } from "formik";
-// import { setUser } from "../../state";
-import { ToastContainer, toast } from 'react-toastify';
+
+import { ToastContainer, toast } from "react-toastify";
 import { setUser } from "../../Redux/store";
-import { Link } from "react-router-dom";
 
 const StyledModal = styled(Modal)({
   display: "flex",
@@ -38,7 +37,6 @@ const EditProfile = ({ open, setOpen }) => {
   });
 
   const validationSchemapass = Yup.object().shape({
-    // bio: Yup.string(),
     passwords: Yup.object().shape({
       currentPassword: Yup.string().required("Current password is required"),
       newPassword: Yup.string()
@@ -59,84 +57,66 @@ const EditProfile = ({ open, setOpen }) => {
 
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
     try {
-
-        console.log("EEde ethi", values)
-    
       setIsSubmitting(true);
       const userId = user._id;
       const { firstName, lastName, bio } = values;
-     
 
-      const { currentPassword, newPassword, confirmPassword } = values.passwords;
+      const { currentPassword, newPassword, confirmPassword } =
+        values.passwords;
 
-
-      const data = {  bio, userId };
-      const data2 = {  bio, userId };
-      console.log("data2",data2)
+      const data = { bio, userId };
 
       if (newPassword) {
         data.currentPassword = currentPassword;
         data.newPassword = newPassword;
       }
 
-      console.log(data, "weeeeeeeeeeeeeeeeeee");
-
       const response = await axios.put(`/api/users/profile/${userId}`, data, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      toast.success("Profile Edited")
+      toast.success("Profile Edited");
       setSuccessMessage("Profile updated successfully");
       setIsSubmitting(false);
       setOpen(false);
-      console.log(response.data);
-      
+
       dispatch(setUser({ user: response.data }));
     } catch (error) {
-      toast.error("Failed tp update profile")
+      toast.error("Failed tp update profile");
       setErrorMessage("Failed to update profile");
       setIsSubmitting(false);
       setOpen(false);
     }
   };
 
-
-//Bio sumiting
-const handleSubmitBio = async (values, { setSubmitting, setErrors }) => {
+  //Bio sumiting
+  const handleSubmitBio = async (values, { setSubmitting, setErrors }) => {
     try {
-
-        console.log("EEde ethi", values)
-    
       setIsSubmitting(true);
       const userId = user._id;
       const { firstName, lastName, bio } = values;
-     
 
-      
+      const data = { bio, userId };
 
-
-      const data = {  bio, userId };
-     
-
-      console.log(data, "weeeeeeeeeeeeeeeeeee");
-
-      const response = await axios.put(`/api/users/profilebio/${userId}`, data, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      toast.success("Profile Edited")
+      const response = await axios.put(
+        `/api/users/profilebio/${userId}`,
+        data,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      toast.success("Profile Edited");
       setSuccessMessage("Profile updated successfully");
       setIsSubmitting(false);
       setOpen(false);
-      console.log(response.data);
 
       dispatch(setUser({ user: response.data }));
     } catch (error) {
-      toast.error("Failed tp update profile")
+      toast.error("Failed tp update profile");
       setErrorMessage("Failed to update profile");
       setIsSubmitting(false);
       setOpen(false);
     }
   };
-
 
   const [profileEdit, setProfileEdit] = useState(true);
   return (
@@ -187,11 +167,8 @@ const handleSubmitBio = async (values, { setSubmitting, setErrors }) => {
               >
                 <Formik
                   initialValues={{
-                    // firstName: user.firstName,
-                    // lastName: user.lastName,
                     username: user.username,
                     email: user.email,
-                    // phone: user.phone,
                     bio: user.bio,
                   }}
                   validationSchema={validationSchemabio}
@@ -237,7 +214,6 @@ const handleSubmitBio = async (values, { setSubmitting, setErrors }) => {
                         }}
                       />
 
-                      
                       <Button
                         sx={{
                           alignItems: "center",
@@ -279,20 +255,18 @@ const handleSubmitBio = async (values, { setSubmitting, setErrors }) => {
                     lastName: user.lastName,
                     username: user.username,
                     email: user.email,
-                    // phone: user.phone,
                     bio: user.bio,
                     passwords: {
-                        currentPassword: "",
-                        newPassword: "",
-                        confirmPassword: ""
-                      }
+                      currentPassword: "",
+                      newPassword: "",
+                      confirmPassword: "",
+                    },
                   }}
                   validationSchema={validationSchemapass}
                   onSubmit={handleSubmit}
                 >
                   {({ errors, touched }) => (
                     <Form>
-                     
                       <Field
                         name="passwords.currentPassword"
                         as={TextField}
@@ -351,7 +325,7 @@ const handleSubmitBio = async (values, { setSubmitting, setErrors }) => {
                       />
 
                       <Button
-                      type="submit"
+                        type="submit"
                         sx={{
                           width: "50%",
                           backgroundColor: "#938eef",
@@ -363,7 +337,6 @@ const handleSubmitBio = async (values, { setSubmitting, setErrors }) => {
                           },
                         }}
                         variant="contained"
-                        
                       >
                         submit
                       </Button>

@@ -6,13 +6,75 @@ import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
 import FeedIcon from '@mui/icons-material/Feed';
 import ReportProblemIcon from '@mui/icons-material/ReportProblem';
+import { useState } from "react";
+import { useEffect } from "react";
+import axios from "../../utils/axios";
+import { getUsersCountss,getPostsCountss,getReportCountss} from "../../utils/Constants";
+
+
 
 const Widget = ({ type }) => {
   let data;
 
+  const [usersCount, setUsersCount] = useState([]);
+  const [postsCount, setPostsCount] = useState([]);
+  const [reportCount, setReportCount] = useState([]);
+
+
+
+  useEffect((key) => {
+    getUsersCount();
+    getPostsCount();
+    getReportCount();
+  }, []);
+  
+  const getUsersCount = () => {
+    axios
+      .get(getUsersCountss)
+      .then((response) => {
+        setUsersCount(response.data);
+        console.log("User Count:",response.data.count)
+      })
+      .catch((error) => {
+        console.log("inside catch User");
+        console.log(error);
+      });
+  };
+
+  const getPostsCount = () => {
+    axios
+      .get(getPostsCountss)
+      .then((response) => {
+        setPostsCount(response.data);
+        console.log("Post Count:",response.data.count)
+      })
+      .catch((error) => {
+        console.log("inside catch Post");
+        console.log(error);
+      });
+  };
+
+  const getReportCount = () => {
+    axios
+      .get(getReportCountss)
+      .then((response) => {
+        setReportCount(response.data);
+        console.log("Report Count:",response.data.count)
+      })
+      .catch((error) => {
+        console.log("inside catch Report");
+        console.log(error);
+      });
+  };
+  
+
   //temporary
-  const amount = 100;
-  const diff = 20;
+  const amountUser = usersCount.count;
+  const amountPost = postsCount.count;
+  const amountRepo = reportCount.count;
+  
+
+  // const diff = 20;
 
   switch (type) {
     case "user":
@@ -31,41 +93,27 @@ const Widget = ({ type }) => {
         ),
       };
       break;
-    // case "report":
-    //   data = {
-    //     title: "REPORTS",
-    //     isMoney: false,
-    //     link: "View all orders",
-    //     icon: (
-    //       <ShoppingCartOutlinedIcon
-    //         className="icon"
-    //         style={{
-    //           backgroundColor: "rgba(218, 165, 32, 0.2)",
-    //           color: "goldenrod",
-    //         }}
-    //       />
-    //     ),
-    //   };
-    //   break;
-    case "report":
-      data = {
-        title: "REPORTS",
-        isMoney: true,
-        link: "View all reports",
+  
+      case "report":
+        data = {
+          title: "REPORTS",
+          isMoney: true,
+          link: "View all reports",
         icon: (
           <ReportProblemIcon
-            className="icon"
-            style={{ backgroundColor: "rgba(0, 128, 0, 0.2)", color: "green" }}
+          className="icon"
+          style={{ backgroundColor: "rgba(0, 128, 0, 0.2)", color: "green" }}
           />
-        ),
-      };
-      break;
-    case "posts": 
-      data = {
-        title: "POSTS",
-        isMoney: true,
-        link: "See details",
-        icon: (
+          ),
+        };
+        break;
+        case "posts": 
+        
+        data = {
+          title: "POSTS",
+          isMoney: true,
+      link: "See details",
+      icon: (
           <FeedIcon
             className="icon"
             style={{
@@ -85,14 +133,15 @@ const Widget = ({ type }) => {
       <div className="left">
         <span className="title">{data.title}</span>
         <span className="counter">
-          {data.isMoney && "$"} {amount}
+        {type === "user" && amountUser}
+        {type === "posts" && amountPost}
+        {type === "report" && amountRepo}
         </span>
         <span className="link">{data.link}</span>
       </div>
       <div className="right">
         <div className="percentage positive">
-          <KeyboardArrowUpIcon />
-          {diff} %
+          
         </div>
         {data.icon}
       </div>

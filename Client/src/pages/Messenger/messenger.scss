@@ -1,86 +1,98 @@
 .messenger {
-    height: calc(100vh - 70px);
-    display: flex;
+  height: calc(100vh - 70px);
+  display: flex;
 }
 
-.chatMenu{
-    flex: 3.5;
+.chatMenu {
+  flex: 3.5;
+  color: white;
+  background-color: rgba(9, 19, 9, 0.534);
 }
 
-.chatMenuInput{
-    width: 90%;
-    padding: 10px 0;
-    border: none;
-    border-bottom: 1px solid grey;
+.chatMenuInput {
+  width: 90%;
+  padding: 10px 0;
+  border: none;
+  border-bottom: 1px solid grey;
 }
 
-.chatBox{
-    flex: 5.5;
-    background: url('https://i.pinimg.com/736x/8c/98/99/8c98994518b575bfd8c949e91d20548b.jpg');
+.chatBox {
+  flex: 5.5;
+  color: white;
+  background: url("https://cdn.wallpapersafari.com/46/78/exDpS7.jpg");
 }
 
-.chatBoxBottom{
-    // margin-top: 5px;
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.chatBoxBottom {
+  // margin-top: 5px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.chatMessageInput{
-    width: 80%;
-    height: 40px;
-    padding: 10px;
+.chatMessageInput {
+  width: 80%;
+  height: 40px;
+  padding: 10px;
+  background-color: rgba(3, 10, 3, 0.445);
+  color: white;
 }
 
-.chatSubmitButton{
-    width: 70px;
-    height: 40px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    background-color:rgb(144, 228, 133) ;
+.chatSubmitButton {
+  width: 70px;
+  height: 40px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: rgb(144, 228, 133);
 }
-
 
 .chatMenuWrapper,
 .chatBoxWrapper {
-    padding: 10px;
-    height: 100%;
+  padding: 10px;
+  height: 100%;
 }
 
-.chatBoxWrapper{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    position: relative;
+.chatBoxWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
 }
 
-.chatBoxTop{
-    height: 100%;
-    overflow-y: scroll;
-//    padding-right: 10px;
+.chatBoxTop {
+  height: 100%;
+  overflow-y: scroll;
+  //    padding-right: 10px;
+}
+.chatBoxTop::-webkit-scrollbar {
+  display: none;
+}
+.noCoversationText {
+  position: absolute;
+  top: 10%;
+  font-size: 50px;
+  color: rgb(134, 126, 126);
+  cursor: default;
 }
 
-.noCoversationText{
-position: absolute;
-top: 10%;
-font-size: 50px;
-color: rgb(134, 126, 126);
-cursor: default;
+.userTop {
+  background-color: rgba(128, 128, 128, 0.219);
+  width: 100%;
+  // position: absolute;
+  top: 0;
+  display: flex;
+  // padding: 10px;
+  justify-content: center;
+  height: 70px;
 }
 
-.userTop{
-    background-color: rgba(128, 128, 128, 0.219);
-    width: 100%;
-    // position: absolute;
-    top: 0;
-    display: flex;
-    // padding: 10px;
-    justify-content: center;
-    height: 70px;
+.profile {
+  display: hidden;
 }
 
-.profile{
-    display: hidden;
+.ConversationList {
+  background-color: rgb(4, 14, 14);
+  color: aliceblue;
+  width: 100%;
 }

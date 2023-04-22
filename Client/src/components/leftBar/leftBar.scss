@@ -10,7 +10,7 @@
     background-color: themed("bg");
     color: themed("textColor");
 
-    @include mobile{
+    @include mobile {
       display: none;
     }
 
@@ -54,7 +54,6 @@
           }
         }
 
-        
         .item {
           display: flex;
           align-items: center;
@@ -68,8 +67,45 @@
           span {
             font-size: 14px;
           }
-          
         }
+        .item:hover svg {
+          transform: scale(1.2);
+          transition: transform 0.8s ease-in-out;
+        }
+        .item:hover svg {
+          animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+          0% {
+            transform: translateX(0);
+          }
+          20% {
+            transform: translateX(-5px) rotate(-5deg);
+          }
+          40% {
+            transform: translateX(5px) rotate(5deg);
+          }
+          60% {
+            transform: translateX(-5px) rotate(-5deg);
+          }
+          80% {
+            transform: translateX(5px) rotate(5deg);
+          }
+          100% {
+            transform: translateX(0) rotate(0);
+          }
+        }
+      }
+      .gif-container {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        margin-bottom: 120px;
+        transform: translateX(-50%);
+        width: 100%;
+        display: flex;
+        justify-content: center;
       }
     }
   }

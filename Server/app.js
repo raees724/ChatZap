@@ -1,16 +1,24 @@
-const dotenv = require("dotenv")
+const dotenv = require("dotenv");
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const connection = require("./db");
-const authUserRoutes = require("./routes/authUser");
+const connection = require("./config/db");
 const authAdminRoutes = require("./routes/authAdmin");
 const userRoutes = require("./routes/users");
 const adminRoutes = require("./routes/admin");
 
+const conversationRoute = require("./routes/conversations");
+const messageRoute = require("./routes/messages");
 
-const ConverstationRoutes = require("./routes/converstationRoutes");
-const MessageRoutes= require("./routes/messagesRoutes");
+const { createServer } = require("http");
+const { Server } = require("socket.io");
+
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: "http://localhost:3000",
+  },
+});
 
 //config
 dotenv.config();
@@ -24,57 +32,55 @@ app.use(cors());
 
 // routes
 app.use("/api/users", userRoutes);
-app.use("/api/authUser", authUserRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/conversations", conversationRoute);
+app.use("/api/messages", messageRoute);
 app.use("/api/authAdmin", authAdminRoutes);
 
+let users = [];
 
+const addUser = (userId, socketId) => {
+  !users.some((user) => user.userId === userId) &&
+    users.push({ userId, socketId });
 
-app.use('/api/converstation', ConverstationRoutes);
-app.use('/api/message', MessageRoutes);
-
-
-
-let users = []
-
-const addUser = (urId, socketId) => {
-    !users.some(user => user.urId === urId) &&
-        users.push({ urId, socketId });
-}
+  console.log("::::socket Users:::::::", users);
+};
 
 const removeUser = (socketId) => {
-    users = users.filter(user => user.socketId !== socketId)
-}
+  users = users.filter((user) => user.socketId !== socketId);
+};
 
-const getUser = (id) => {
-    return users.find(user => user.urId === id)
-}
+const getUser = (userId) => {
+  return users.find((user) => user.userId === userId);
+};
 
-io.on('connection', (socket) => {
-    console.log(' connection');
-    // take urId and socketId from user
-    socket.on('addUser', urId => {
-        console.log('add new connection');
-        addUser(urId, socket.id);
-        io.emit('getUsers', users)
-    })
-    // Send and Get message
-    socket.on('sendMessage', ({ senderId, receiverId, text }) => {
-        const user = getUser(receiverId);
-        console.log('new message');
-        io.to(user?.socketId).emit('getMessage', {
-            senderId, text
-        })
-    })
+io.on("connection", (socket) => {
+  //when connect
+  console.log("a user 1connected.");
+  socket.on("addUser", (userId) => {
+    console.log("add a new connection");
+    addUser(userId, socket.id);
+    io.emit("getUsers", users);
+  });
 
-    // Disconnect
-    socket.on('disconnect', () => {
-        console.log('dissconnecte');
-        removeUser(socket.id)
-        io.emit('getUsers', users)
-    })
-})
+  //send and get message
+  socket.on("sendMessage", ({ senderId, receiverId, text }) => {
+    const user = getUser(receiverId);
+    io.to(user?.socketId).emit("getMessage", {
+      senderId,
+      text,
+    });
+  });
 
+  //when disconnect
+  socket.on("disconnect", () => {
+    console.log("a user 1disconnected");
+    removeUser(socket.id);
+    io.emit("getUsers", users);
+  });
+});
 
-const port = process.env.PORT || 2000;
-app.listen(port, console.log(`Listening on port ${port}...`));
+const port = process.env.PORT || 5000;
+httpServer.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});

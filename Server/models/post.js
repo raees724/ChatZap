@@ -1,65 +1,67 @@
 // import mongoose from 'mongoose';
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const postSchema = new mongoose.Schema({
-    content: {
+  content: {
+    type: String,
+    require: false,
+  },
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
+    required: true,
+  },
+  image: {
+    type: String,
+    required: false,
+  },
+  likes: {
+    type: Array,
+    default: [],
+    required: false,
+  },
+  comments: [
+    {
+      text: {
         type: String,
-        require:false
-    },
-    author: {
+      },
+      author: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'user',
-        required: true
-    },
-    image: {
-        type: String,
-        required: false
-    },
-    likes: {
-        type: Array,
-        default: [],
-        required: false
-    },
-    comments: [{
-        text: {
-            type: String,
-        },
-        author: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'user',
-        },
-        createdAt: {
-            type: Date,
-            default: Date.now
-        },
-        isDelete: {
-            type: Boolean,
-            default: false
-        }
-    }],
-    createdAt: {
+        ref: "user",
+      },
+      createdAt: {
         type: Date,
-        default: Date.now
-    },
-    isDelete: {
+        default: Date.now,
+      },
+      isDelete: {
         type: Boolean,
-        default: false
+        default: false,
+      },
     },
-    isReported: {
-        type: Boolean,
-        default: false
-    },
-    isDisabled: {
-        type: Boolean,
-        default: false
-    },
-    reports: {
-        type: Array,
-        default: [],
-        required: false
-    },
+  ],
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  isDelete: {
+    type: Boolean,
+    default: false,
+  },
+  isReported: {
+    type: Boolean,
+    default: false,
+  },
+  isDisabled: {
+    type: Boolean,
+    default: false,
+  },
+  reports: {
+    type: Array,
+    default: [],
+    required: false,
+  },
 });
 
-const Post = mongoose.model('Post', postSchema);
+const Post = mongoose.model("Post", postSchema);
 
-module.exports =  Post;
+module.exports = Post;
