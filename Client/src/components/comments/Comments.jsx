@@ -1,11 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import "./comments.scss";
 import { AuthContext } from "../../context/authContext";
-import { format } from "timeago.js";
+// import { format } from "timeago.js";
 import axios from "../../utils/axios";
 import { setPost } from "../../Redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
+import moment from 'moment';
+
 
 const Comments = ({ post }) => {
   const [comments, setComments] = useState(post.comments);
@@ -66,7 +68,8 @@ const Comments = ({ post }) => {
             <span>{comment.author.username}</span>
             <p>{comment.text}</p>
           </div>
-          <span className="date">{format(comment.createdAt)}</span>
+          {/* <span className="date">{format(comment.createdAt)}</span> */}
+          <span className="date">{moment(comment.createdAt).fromNow()}</span>
         </div>
       ))}
     </div>

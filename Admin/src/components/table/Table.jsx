@@ -13,6 +13,7 @@ import axios from "../../utils/axios";
 import { getAllUsers} from "../../utils/Constants";
 import { useDispatch } from 'react-redux';
 import Button from '@mui/material/Button';
+import Swal from "sweetalert2";
 
 
 const List = () => {
@@ -49,21 +50,55 @@ const List = () => {
     });
   },[block]);
   
-  const blockStaff = (id) => {
-      axios.patch(`http://localhost:2000/api/admin/block/${id}`).then(({ data }) => {
-        console.log(data,'wwwwwwwwwwwwwrrrrrrrrrrrrrrrrr');
-        setBlock(!block);
-        dispatch(setState({user:data.user}))
-        window.location.reload();
-      })
-      .then(() => {
-        navigate(window.location.pathname, { replace: true });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    };
+  // const blockStaff = (id) => {
+  //     axios.patch(`http://localhost:2000/api/admin/block/${id}`).then(({ data }) => {
+  //       console.log(data,'wwwwwwwwwwwwwrrrrrrrrrrrrrrrrr');
+  //       setBlock(!block);
+  //       dispatch(setState({user:data.user}))
+  //       window.location.reload();
+  //     })
+  //     .then(() => {
+  //       navigate(window.location.pathname, { replace: true });
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  //   };
   
+  const blockStaff = (id) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'This action will block the user account.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, block it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.patch(`http://localhost:2000/api/admin/block/${id}`).then(({ data }) => {
+          console.log(data,'wwwwwwwwwwwwwrrrrrrrrrrrrrrrrr');
+          setBlock(!block);
+          dispatch(setState({user:data.user}))
+          window.location.reload();
+        })
+        .then(() => {
+          navigate(window.location.pathname, { replace: true });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+        
+        Swal.fire(
+          'Blocked!',
+          'The user account has been blocked.',
+          'success'
+        )
+      }
+    })
+  };
+  
+
     const unblockStaff = (id) => {
       axios
         .patch(`http://localhost:2000/api/admin/unblock/${id}`)

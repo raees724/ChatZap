@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./message.scss";
-import { format } from "timeago.js";
+// import { format } from "timeago.js";
 import axios from "../../utils/axios";
+import moment from 'moment';
 
 import { useSelector } from "react-redux";
 const Message = ({ message, own, conversation }) => {
@@ -31,7 +32,7 @@ const Message = ({ message, own, conversation }) => {
         <img className="messageImg" src={user.profilePicture} alt="" />
         <p className="messageText">{message?.text}</p>
       </div>
-      <div className="messageBottom">{format(message?.createdAt)}</div>
+      <div className="messageBottom">{moment(message?.createdAt).fromNow()}</div>
     </div>
   );
 };

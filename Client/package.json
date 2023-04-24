@@ -17,6 +17,7 @@
     "eslint-config-react-app": "^7.0.1",
     "formik": "^2.2.9",
     "mdb-react-ui-kit": "^6.0.0",
+    "moment": "^2.29.4",
     "otp-input-react": "^0.3.0",
     "react": "^18.0.0",
     "react-bootstrap": "^2.7.2",
@@ -33,7 +34,6 @@
     "socket.io-client": "^4.6.1",
     "sweetalert2": "^11.7.3",
     "tesseract.js": "^4.0.3",
-    "timeago.js": "^4.0.0-beta.3",
     "web-vitals": "^2.1.4",
     "yup": "^1.0.2"
   },

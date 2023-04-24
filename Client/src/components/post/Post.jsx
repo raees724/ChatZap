@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ReportIcon from "@mui/icons-material/Report";
 import { useSelector, useDispatch } from "react-redux";
-import { format } from "timeago.js";
+// import { format } from "timeago.js";
 import axios from "../../utils/axios";
 import { setPost } from "../../Redux/store";
 import { setdeletePost } from "../../Redux/store";
@@ -18,6 +18,7 @@ import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
+import moment from 'moment';
 
 const Post = ({ post }) => {
   const [liked, setLiked] = useState(false);
@@ -145,7 +146,7 @@ const Post = ({ post }) => {
               >
                 <span className="name">{post.author.username}</span>
               </Link>
-              <span className="date">{format(post.createdAt)}</span>
+              <span className="date">{moment(post.createdAt).fromNow()}</span>
             </div>
           </div>
 

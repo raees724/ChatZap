@@ -106,19 +106,6 @@ const LeftBar = () => {
             <h4>Swith theme</h4>
           </div>
         </div>
-        <div className="gif-container">
-          <img
-            src={walk}
-            alt="animated gif"
-            style={{
-              width: "300px",
-              height: "300px",
-              position: "absolute",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-            }}
-          />
-        </div>
       </div>
     </div>
   );
