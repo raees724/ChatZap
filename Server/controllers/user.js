@@ -116,7 +116,7 @@ module.exports = {
           await updateData.save();
 
           const mailOptions = {
-            from: process.env.Email,
+            from: process.env.EMAIL,
             to: email,
             subject: "Sending Email for Otp Validation",
             text: `OTP:-${OTP}`,

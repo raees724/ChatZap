@@ -10,7 +10,7 @@ import Paper from "@mui/material/Paper";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "../../utils/axios";
-import { getAllPosts} from "../../utils/Constants";
+import { blockposts, getAllPosts, unblockposts} from "../../utils/Constants";
 import { getAllUsers} from "../../utils/Constants";
 import { useDispatch } from 'react-redux';
 import Button from '@mui/material/Button';
@@ -61,7 +61,7 @@ const Report = () => {
   
   
   const blockpost = (id) => {
-      axios.patch(`http://localhost:2000/api/admin/blockpost/${id}`).then(({ data }) => {
+      axios.patch(`${blockposts}/${id}`).then(({ data }) => {
         console.log(data,'wwwwwwwwwwwwwrrrrrrrrrrrrrrrrr');
         setBlock(!block);
         dispatch(setState({post:data.posts}))
@@ -77,11 +77,12 @@ const Report = () => {
   
     const unblockpost = (id) => {
       axios
-        .patch(`http://localhost:2000/api/admin/unblockpost/${id}`)
+        .patch(`${unblockposts}/${id}`)
         .then(({ data }) => {
           console.log(data, 'rrrrrrrrrrrrrrrrr');
           setBlock(!block);
           dispatch(setState({ post:data.posts }));
+          window.location.reload();
         })
         .then(() => {
           navigate(window.location.pathname, { replace: true });

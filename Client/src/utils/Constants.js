@@ -1,4 +1,5 @@
-export const baseUrl = "http://localhost:2000/";
+export const baseUrl = process.env.REACT_APP_BASE_URL;
+
 
 // urls
 export const loginPost = "api/users/login";

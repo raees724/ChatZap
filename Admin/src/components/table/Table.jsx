@@ -10,7 +10,7 @@ import Paper from "@mui/material/Paper";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "../../utils/axios";
-import { getAllUsers} from "../../utils/Constants";
+import { blockusers, getAllUsers, unblockusers} from "../../utils/Constants";
 import { useDispatch } from 'react-redux';
 import Button from '@mui/material/Button';
 import Swal from "sweetalert2";
@@ -50,20 +50,6 @@ const List = () => {
     });
   },[block]);
   
-  // const blockStaff = (id) => {
-  //     axios.patch(`http://localhost:2000/api/admin/block/${id}`).then(({ data }) => {
-  //       console.log(data,'wwwwwwwwwwwwwrrrrrrrrrrrrrrrrr');
-  //       setBlock(!block);
-  //       dispatch(setState({user:data.user}))
-  //       window.location.reload();
-  //     })
-  //     .then(() => {
-  //       navigate(window.location.pathname, { replace: true });
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  //   };
   
   const blockStaff = (id) => {
     Swal.fire({
@@ -76,7 +62,7 @@ const List = () => {
       confirmButtonText: 'Yes, block it!'
     }).then((result) => {
       if (result.isConfirmed) {
-        axios.patch(`http://localhost:2000/api/admin/block/${id}`).then(({ data }) => {
+        axios.patch(`${blockusers}/${id}`).then(({ data }) => {
           console.log(data,'wwwwwwwwwwwwwrrrrrrrrrrrrrrrrr');
           setBlock(!block);
           dispatch(setState({user:data.user}))
@@ -101,7 +87,7 @@ const List = () => {
 
     const unblockStaff = (id) => {
       axios
-        .patch(`http://localhost:2000/api/admin/unblock/${id}`)
+        .patch(`${unblockusers}/${id}`)
         .then(({ data }) => {
           console.log(data, 'rrrrrrrrrrrrrrrrr');
           setBlock(!block);

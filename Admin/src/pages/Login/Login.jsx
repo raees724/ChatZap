@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import axios from "../../utils/axios";
 import styles from './styles.module.scss'
 import { loginPost } from "../../utils/Constants";
 import { useDispatch } from "react-redux";
@@ -22,7 +22,7 @@ const Login = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		try {
-			const url = "http://localhost:2000/api/admin/login";
+			const url = `${loginPost}`;
 			// const url = loginPost;
 			const { data: res } = await axios.post(url, data);
 			console.log(res.token,'ooooooooo');
@@ -41,6 +41,22 @@ const Login = () => {
 			}
 		}
 	};
+
+	// const blockpost = (id) => {
+	// 	axios.patch(`${blockposts}/${id}`).then(({ data }) => {
+	// 	  console.log(data,'wwwwwwwwwwwwwrrrrrrrrrrrrrrrrr');
+	// 	  setBlock(!block);
+	// 	  dispatch(setState({post:data.posts}))
+	// 	  window.location.reload();
+	// 	})
+	// 	.then(() => {
+	// 	  navigate(window.location.pathname, { replace: true });
+	// 	})
+	// 	.catch((error) => {
+	// 	  console.log(error);
+	// 	});
+	//   };
+	
 
 	return (
 		<div className={styles.login_container}>

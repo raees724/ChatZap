@@ -22,11 +22,14 @@ import OtpPage from "./pages/Otp/OtpPage";
 import Messenger from "./pages/Messenger/Messenger";
 import Notification from "./pages/Notification/Notification";
 import { useSelector } from "react-redux";
+import PageNotFound from "./PageNotFound";
 
 function App() {
 
   const { darkMode } = useContext(DarkModeContext);
   const user = useSelector((state) => state.user);
+
+
   const Layout = () => {
     return (
       <div className={`theme-${darkMode ? "dark" : "light"}`}>
@@ -98,6 +101,10 @@ function App() {
     {
       path: "/Otp",
       element: <OtpPage />,
+    },
+    {
+      path: "*",
+      element: <PageNotFound />,
     },
   ]);
 
