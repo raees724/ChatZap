@@ -11,7 +11,7 @@ import Chattop from "../../components/ChatTop/Chattop";
 import Profile from "../profile/Profile";
 import { useParams } from "react-router-dom";
 
-const socket = io.connect("ws://localhost:2000");
+const socket = io.connect(`${process.env.REACT_APP_SOCKET_URL}`);
 
 const Messenger = () => {
   const [conversations, setConversations] = useState([]);
