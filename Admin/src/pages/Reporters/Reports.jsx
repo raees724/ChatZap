@@ -10,7 +10,6 @@ const Reports = () => {
       <Sidebar/>
       <div className="listContainer">
         <Navbar/>
-        {/* <Table/> */}
         <Report/>
       </div>
     </div>
